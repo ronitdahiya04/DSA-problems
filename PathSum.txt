@@ -1,0 +1,32 @@
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) 
+    {
+        if(root!=null)
+        {
+            List<Integer> path_sums = new ArrayList<Integer>();
+            int length=0;
+            this.storePathSums(root, path_sums, length);
+            return path_sums.contains(targetSum);
+        }
+        else
+            return false;
+    }
+    public void storePathSums(TreeNode root, List<Integer> path_sums, int length)
+    {
+        if(root==null)
+            return;
+        else if(root.left==null && root.right==null)
+        {
+            length = length + root.val;
+            path_sums.add(length);
+            return;
+        }
+        else
+        {
+            length += root.val;
+            storePathSums(root.left, path_sums, length);
+            storePathSums(root.right, path_sums, length);
+            return;
+        }
+    }
+}

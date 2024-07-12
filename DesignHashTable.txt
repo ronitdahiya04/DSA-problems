@@ -1,0 +1,114 @@
+public class Node
+{
+    int key;
+    int val;
+    Node next;
+    public Node(int key, int val)
+    {
+        this.key=key;
+        this.val=val;
+        this.next=null;
+    }
+}
+class HashTable 
+{
+    int size;
+    int cap;
+    Node[] table_entry;
+    public HashTable(int capacity) 
+    {
+        size=0;
+        cap=capacity;
+        table_entry=new Node[cap];
+    }
+    public void insert(int key, int value) 
+    {
+        int index=key%cap;
+        if(table_entry[index]==null)
+        {
+            table_entry[index]=new Node(key, value);
+            size++;
+            if(size >= (cap/2))
+                this.resize();
+        }
+        else if(table_entry[index].key==key)
+        {
+            table_entry[index].val=value;
+        }
+        else
+        {
+            Node node=new Node(key, value);
+            Node temp=table_entry[index];
+            while(temp.next!=null)
+            {
+                temp=temp.next;
+                if(temp.key==key)
+                {
+                    temp.val=value;
+                    return;
+                }
+            }
+            temp.next=node;
+            size++;
+            if(size >= (cap/2))
+                this.resize();
+        }
+    }  
+    public int get(int key) 
+    {   
+        int index=(key%cap);
+        Node node=table_entry[index];
+        while(node!=null)
+        {
+            if(node.key==key)
+                return node.val;
+            node=node.next;
+        }
+        return -1;
+    }
+
+    public boolean remove(int key) 
+    {
+        if(this.get(key)==-1)
+            return false;
+        int index=key%cap;
+        Node node=table_entry[index];
+        if(table_entry[index].key==key)
+        {
+            table_entry[index]=node.next;
+            size--;
+            return true;
+        }
+        else
+        {
+            while(node.next.key!=key && node.next!=null)
+                node=node.next;
+            node.next=node.next.next;
+            size--;
+            return true;
+        }
+    }
+    public int getSize() 
+    {
+        return size;
+    }
+
+    public int getCapacity() 
+    {
+        return cap;
+    }
+
+    public void resize() 
+    {
+        int oldcap=cap;
+        cap=(cap+cap);
+        Node[] oldtable=table_entry;
+        Node[] newtable=new Node[cap];
+        table_entry=newtable;
+        for(int index=0;index<oldcap;index++)
+        {
+            if(oldtable[index] != null)
+                table_entry[index]=oldtable[index];
+        }
+    }
+}

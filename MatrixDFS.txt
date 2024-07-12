@@ -1,0 +1,33 @@
+Matrix Depth-First Search
+Solved 
+You are given a binary matrix Grid where 0s represent land and 1s represent rocks that can not be traversed.
+
+Return the number of unique paths from the top-left corner of Grid to the bottom-right corner such that all traversed cells are land cells. You may only move vertically or horizontally through land cells. For an individual unique path you cannot visit the same cell twice.
+
+class Solution 
+{
+    public int countPaths(int[][] grid) 
+    {
+        int[][] visited = grid;
+        return this.dfs(grid, 0, 0, visited);
+    }
+    public int dfs(int[][] grid, int r, int c, int[][] visited)
+    {
+        int rows=grid.length;
+        int cols=grid[0].length;
+        if(Math.min(r,c)<0 || r==rows || c==cols || visited[r][c]==1 || grid[r][c]==1)
+            return 0;
+        if(r == rows-1 && c == cols-1)
+            return 1;
+        
+        visited[r][c] = 1;
+        int count=0;
+        count = count + dfs(grid, r+1, c, visited);
+        count = count + dfs(grid, r-1, c, visited);
+        count = count + dfs(grid, r, c+1, visited);
+        count = count + dfs(grid, r, c-1, visited);
+
+        visited[r][c] = 0;
+        return count;
+    }
+}
