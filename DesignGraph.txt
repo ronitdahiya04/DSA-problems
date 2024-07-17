@@ -1,0 +1,91 @@
+Design Graph
+Design a directed Graph class.
+
+Your Graph class should support the following operations:
+
+Graph() will initialize an empty directed graph.
+void addEdge(int src, int dst) will add an edge from src to dst if it does not already exist. If either src or dst do not exist, add them to the graph.
+bool removeEdge(int src, int dst) will remove the edge from src to dst if it exists. Return whether the edge was removed. Either src or dst may not exist in the graph.
+bool hasPath(int src, int dst) will return whether there is a path from src to dst. Assume both src and dst exist in the graph.
+
+class Graph {
+    HashMap<Integer, ArrayList<Integer>> graph;
+    boolean result;
+    public Graph() 
+    {
+        graph=new HashMap<>();
+        result=false;
+    }
+
+    public void addEdge(int src, int dst) 
+    {
+        if(graph.containsKey(src))
+        {
+            if(graph.containsKey(dst))
+            {
+                if(graph.get(src).contains(dst))
+                    return;
+                graph.get(src).add(dst);
+            }
+            else
+            {
+                graph.put(dst, new ArrayList<Integer>());
+                graph.get(src).add(dst);
+            }
+        }
+        else
+        {
+            if(graph.containsKey(dst))
+            {
+                graph.put(src, new ArrayList<Integer>());
+                graph.get(src).add(dst);
+            }
+            else
+            {
+                graph.put(src, new ArrayList<Integer>());
+                graph.put(dst, new ArrayList<Integer>());
+                graph.get(src).add(dst);
+            }
+        }
+    }
+
+    public boolean removeEdge(int src, int dst) 
+    {
+        if(graph.isEmpty() || !graph.containsKey(src) || !graph.get(src).contains(dst))
+            return false;
+        for(int i=0;i<(graph.get(src)).size();i++)
+        {
+            if(graph.get(src).get(i)==dst)
+            {
+                graph.get(src).remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasPath(int src, int dst) 
+    {
+        if(graph.isEmpty())
+            return false;
+        return this.dfs(src, dst, new ArrayList<Integer>());
+    }
+    public boolean dfs(int src, int dst, ArrayList<Integer> visited)
+    {
+        if(src==dst)
+            return true;
+        visited.add(src);
+        Iterator i=graph.get(src).iterator();
+        while(i.hasNext())
+        {
+            Integer curr= (Integer) i.next();
+            System.out.println(curr);
+            if(!visited.contains(curr))
+            {
+                if(dfs(curr, dst, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
+}
