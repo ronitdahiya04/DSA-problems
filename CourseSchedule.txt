@@ -1,0 +1,64 @@
+Course Schedule
+You are given an array prerequisites where prerequisites[i] = [a, b] indicates that you must take course b first if you want to take course a.
+
+The pair [0, 1], indicates that to take course 0 you have to first take course 1, for example.
+
+There are a total of numCourses courses you are required to take, labeled from 0 to numCourses - 1.
+
+Return true if it is possible to finish all courses, otherwise return false.
+
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) 
+    {
+        HashMap<Integer, List<Integer>> graph=new HashMap<>(numCourses);
+        ArrayDeque<Integer> queue=new ArrayDeque<>();
+        for(int i=0;i<prerequisites.length;i++)
+        {
+            if(graph.containsKey(prerequisites[i][1]))
+            {
+                graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+            }
+            else
+            {
+                graph.put(prerequisites[i][1], new ArrayList<Integer>());
+                graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+            }
+            if(!graph.containsKey(prerequisites[i][0]))
+            {
+                graph.put(prerequisites[i][0], new ArrayList<Integer>());
+            }
+            if(!queue.contains(prerequisites[i][1]))
+            {
+                queue.add(prerequisites[i][1]);
+            }
+            if(!queue.contains(prerequisites[i][0]))
+            {
+                queue.add(prerequisites[i][0]);
+            }
+        }
+        while(!queue.isEmpty())
+        {
+            if(!dfs(graph, new HashSet<Integer>(), queue.peek(), queue))
+                return false;
+        }
+        return true;
+    }
+    public boolean dfs(HashMap<Integer, List<Integer>> graph, HashSet<Integer> visited, int node, ArrayDeque<Integer> queue)
+    {
+        queue.remove(node);
+        if(graph.isEmpty())
+            return true;
+        if(visited.contains(node))
+            return false;
+        if(graph.get(node).isEmpty())
+            return true;
+        visited.add(node);
+        for(int i : graph.get(node))
+        {
+            if(!dfs(graph, visited, i, queue))
+                return false;
+        }
+        visited.remove(node);
+        return true;
+    }
+}
