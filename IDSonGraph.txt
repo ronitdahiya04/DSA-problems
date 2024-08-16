@@ -1,0 +1,103 @@
+import java.util.*;
+class GraphIDS
+{
+    static HashMap<Integer, ArrayList<Integer>> graph;
+    public GraphIDS()
+    {
+        graph=new HashMap<>();
+    }
+    public void addEdge(int src, int dst)
+    {
+        if(graph.containsKey(src))
+        {
+            if(graph.containsKey(dst))
+            {
+                if(graph.get(src).contains(dst))
+                    return;
+                graph.get(src).add(dst);
+            }
+            else
+            {
+                graph.put(dst, new ArrayList<Integer>());
+                graph.get(src).add(dst);
+            }
+        }
+        else
+        {
+            if(graph.containsKey(dst))
+            {
+                graph.put(src, new ArrayList<Integer>());
+                graph.get(src).add(dst);
+            }
+            else
+            {
+                graph.put(src, new ArrayList<Integer>());
+                graph.put(dst, new ArrayList<Integer>());
+                graph.get(src).add(dst);
+            }
+        }
+    }
+    public int iterativeDeepeningSearch(HashMap<Integer, ArrayList<Integer>> graph, int start, int goal)
+    {
+        int depth=0;
+        while(true)
+        {
+            if(this.depthLimitedSearch(start, graph, new HashSet<>(), depth, goal))
+                break;
+            depth++;
+        }
+        return depth;
+    }
+    public boolean depthLimitedSearch(int start, HashMap<Integer, ArrayList<Integer>> graph, HashSet<Integer> visited, int depth, int goal)
+    {
+        if(start==goal)
+            return true;
+        if(depth==0)
+            return false;
+        if(visited.contains(start))
+            return false;
+        visited.add(start);
+        for(int i : graph.get(start))
+        {
+            if(depthLimitedSearch(i, graph, visited, depth-1, goal))
+                return true;
+        }
+        return false;
+    }
+   
+    public static void main(String[] args)
+    {
+        {
+            GraphIDS obj=new GraphIDS();
+            obj.addEdge(1,6);
+            obj.addEdge(6,1);
+
+            obj.addEdge(1,2);
+            obj.addEdge(2,1);
+
+            obj.addEdge(6,5);
+            obj.addEdge(5,6);
+
+            obj.addEdge(2,3);
+            obj.addEdge(3,2);
+
+            obj.addEdge(3,4);
+            obj.addEdge(4,3);
+
+            obj.addEdge(3,5);
+            obj.addEdge(5,3);
+
+            obj.addEdge(4,5);
+            obj.addEdge(5,4);
+
+            obj.addEdge(2,6);
+            obj.addEdge(6,2);
+            System.out.println("enter start and then goal");
+            Scanner in=new Scanner(System.in);
+            int start=in.nextInt();
+            int goal=in.nextInt();
+            int result=obj.iterativeDeepeningSearch(graph, start, goal);
+            System.out.println("minimum depth is "+result);
+        }
+    }
+}
