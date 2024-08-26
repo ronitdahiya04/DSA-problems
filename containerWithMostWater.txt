@@ -1,0 +1,29 @@
+class Solution {
+    public int maxArea(int[] heights) {
+        int maxArea=0;
+        int L=0;
+        int R=heights.length-1;
+        while(R>L)
+        {
+            int area=Math.min(heights[L], heights[R])*(R-L);
+            maxArea=Math.max(area, maxArea);
+            if(heights[L]==heights[R])
+            {
+                if((R-L) >= 2)
+                {
+                    if(heights[L+1]>=heights[R-1])
+                        L++;
+                    else
+                        R--;
+                }
+                else
+                    L++;
+            }
+            else if(heights[L]<heights[R])
+                L++;
+            else
+                R--;
+        }
+        return maxArea;
+    }
+}
